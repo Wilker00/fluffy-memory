@@ -1,0 +1,34 @@
+{
+  "agent_id": "analyst_agent",
+  "version": "0.1.0",
+  "display_name": "Fleet Analyst",
+  "description": "Inspects a candidate and decides ACT, DECLINE, or NEEDS_HUMAN.",
+  "model": "gemini-3.5-flash",
+  "capabilities": ["inspection", "policy-evaluation", "routing-decision"],
+  "tools": ["inspect_item"],
+  "output_schema": "Assessment",
+  "memory_scopes": {
+    "tier1": { "read": true, "write": true },
+    "tier2": { "read": true, "write": true },
+    "tier3": {
+      "read": true,
+      "write": true,
+      "rationale": "Constraints discovered during inspection are exactly what future runs need."
+    }
+  },
+  "guardrails": {
+    "inbound": "model_armor",
+    "outbound": "none",
+    "rationale": "Inspection returns third-party content and is the primary indirect prompt-injection surface."
+  },
+  "failure_policy": {
+    "max_attempts": 3,
+    "initial_delay_seconds": 1.0,
+    "backoff_factor": 2.0,
+    "on_exhaustion": "propagate"
+  },
+  "routing": {
+    "emits": ["ACT", "DECLINE", "NEEDS_HUMAN"],
+    "unrecognised_value_behaviour": "escalate to NEEDS_HUMAN"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "agent_id": "scout_agent",
+  "version": "0.1.0",
+  "display_name": "Fleet Scout",
+  "description": "Discovers candidate items and surfaces prior constraints from durable memory.",
+  "model": "gemini-3.5-flash",
+  "capabilities": ["discovery", "prior-constraint-recall"],
+  "tools": ["discover_candidates"],
+  "memory_scopes": {
+    "tier1": { "read": true, "write": true },
+    "tier2": { "read": true, "write": true },
+    "tier3": {
+      "read": true,
+      "write": false,
+      "rationale": "The scout reads organizational memory but cannot amend it. A constraint invented during discovery would become permanent policy."
+    }
+  },
+  "guardrails": {
+    "inbound": "model_armor",
+    "outbound": "none",
+    "rationale": "Discovery consumes external data; its output stays inside the fleet."
+  },
+  "failure_policy": {
+    "max_attempts": 3,
+    "initial_delay_seconds": 1.0,
+    "backoff_factor": 2.0,
+    "on_exhaustion": "propagate"
+  }
+}

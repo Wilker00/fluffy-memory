@@ -1,0 +1,126 @@
+{
+  "eval_set_id": "armcl_cross_session_recall",
+  "name": "ARMCL cross-session recall",
+  "description": "Two runs against the same item. Run 1 discovers a constraint and records it durably; run 2 starts cold and must decline on the strength of that memory alone. The difference between the two outcomes is the whole claim.",
+  "eval_cases": [
+    {
+      "eval_id": "run_1_learns_the_constraint",
+      "conversation": [
+        {
+          "invocation_id": "run-1",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Scheduled fleet run. Assess UNIT-7. Apply every relevant constraint, including any recorded in durable memory."
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "UNIT-7 is a high-risk unit requiring approval. Policy 14 requires a signed failover plan before servicing, and servicing during peak hours is prohibited. Routing to human approval."
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "discover_candidates",
+                "args": { "query": "UNIT-7" }
+              },
+              {
+                "name": "inspect_item",
+                "args": {}
+              }
+            ]
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "fluffy_memory",
+        "user_id": "eval-operator",
+        "state": {}
+      }
+    },
+    {
+      "eval_id": "run_2_declines_from_memory_alone",
+      "conversation": [
+        {
+          "invocation_id": "run-2",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Scheduled fleet run. Assess UNIT-7. Apply every relevant constraint, including any recorded in durable memory."
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "Declining UNIT-7. Durable memory records Policy 14: UNIT-7 must never be serviced without a signed failover plan. No failover plan is present, so this run does not proceed."
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "discover_candidates",
+                "args": { "query": "UNIT-7" }
+              }
+            ]
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "fluffy_memory",
+        "user_id": "eval-operator",
+        "state": {}
+      }
+    },
+    {
+      "eval_id": "dependency_gap_resolved_without_the_operator",
+      "conversation": [
+        {
+          "invocation_id": "run-3",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Scheduled fleet run. Assess all units requiring assessment."
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "Inspected the discovered unit using the identifier carried forward from the discovery step. No request for the identifier was made."
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "discover_candidates",
+                "args": { "query": "all units requiring assessment" }
+              },
+              {
+                "name": "inspect_item",
+                "args": {}
+              }
+            ]
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "fluffy_memory",
+        "user_id": "eval-operator",
+        "state": {}
+      }
+    }
+  ]
+}

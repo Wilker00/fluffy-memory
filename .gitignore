@@ -1,0 +1,78 @@
+# Secrets and credentials
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.cert
+*.crt
+service_account*.json
+credentials.json
+application_default_credentials.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+downloads/
+eggs/
+.eggs/
+sdist/
+wheels/
+*.egg-info/
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Local Tier 3 fallback store
+chroma_data/
+.chroma/
+*.chroma
+
+# Local state
+*.sqlite3
+*.db
+*.sqlite
+armcl_sessions.db
+
+# Testing and tooling caches
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.ruff_cache/
+.mypy_cache/
+.hypothesis/
+
+# Logs and local telemetry dumps
+*.log
+logs/
+otel_traces.json
+
+# Deployment bookkeeping written by deploy.py, read by destroy.py
+.deployed_agent.json
+
+# OS and editor artifacts
+.DS_Store
+._*
+Thumbs.db
+ehthumbs.db
+.idea/
+*.iml
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.code-workspace
+*.swp
+*.swo
+*~
+*.bak
+*.tmp

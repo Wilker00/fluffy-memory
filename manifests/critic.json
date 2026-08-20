@@ -1,0 +1,40 @@
+{
+  "agent_id": "critic_agent",
+  "version": "0.1.0",
+  "display_name": "Fleet Critic",
+  "description": "Independently verifies the execution and records durable lessons.",
+  "model": "gemini-3.5-pro",
+  "model_rationale": "The one place where being wrong is expensive and being slow is acceptable.",
+  "capabilities": ["verification", "adjudication", "lesson-extraction"],
+  "tools": ["verify_action"],
+  "output_schema": "Judgement",
+  "memory_scopes": {
+    "tier1": { "read": true, "write": true },
+    "tier2": { "read": true, "write": true },
+    "tier3": {
+      "read": true,
+      "write": true,
+      "rationale": "Lessons learned from verification are the highest-value durable memories the fleet produces."
+    }
+  },
+  "guardrails": {
+    "inbound": "none",
+    "outbound": "model_armor"
+  },
+  "failure_policy": {
+    "max_attempts": 3,
+    "initial_delay_seconds": 1.0,
+    "backoff_factor": 2.0,
+    "on_exhaustion": "propagate"
+  },
+  "routing": {
+    "emits": ["ACCEPT", "REJECT"],
+    "cycle_target": "analyst_agent",
+    "circuit_breaker": {
+      "threshold": 3,
+      "counter_location": "tier2",
+      "on_trip": "circuit_broken",
+      "rationale": "The REJECT edge is a cycle. The bound is enforced in the graph rather than requested in a prompt."
+    }
+  }
+}

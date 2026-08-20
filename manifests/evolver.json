@@ -1,0 +1,43 @@
+{
+  "agent_id": "evolver_agent",
+  "version": "0.1.0",
+  "display_name": "Fleet Evolver",
+  "description": "Proposes a rewrite of operational tactics after a run. Cannot install the rewrite; a deterministic auditor is the only writer.",
+  "model": "gemini-3.5-flash",
+  "capabilities": ["self-improvement", "playbook-rewrite", "post-run-reflection"],
+  "tools": [],
+  "output_schema": "PlaybookProposal",
+  "in_workflow_graph": true,
+  "invocation": {
+    "mode": "post-terminal",
+    "rationale": "Runs after a terminal work node so the next scheduled invocation starts with updated tactics. Gated by ARMCL_EVOLVE."
+  },
+  "memory_scopes": {
+    "tier1": {
+      "read": true,
+      "write": false,
+      "rationale": "Reads the run outcome and proxy score. Writing would let the rewriter edit the evidence it is scored on."
+    },
+    "tier2": {
+      "read": true,
+      "write": false,
+      "rationale": "Reads the ledger to see which attempts were refused. Must not label them itself."
+    },
+    "tier3": {
+      "read": true,
+      "write": false,
+      "rationale": "May recover the current playbook. Installing a generation is the auditor's job, not this agent's."
+    }
+  },
+  "guardrails": {
+    "inbound": "none",
+    "outbound": "none",
+    "rationale": "Consumes fleet-internal state produced after ingress screening. The auditor, not a content filter, is the control on what it may change."
+  },
+  "failure_policy": {
+    "max_attempts": 3,
+    "initial_delay_seconds": 1.0,
+    "backoff_factor": 2.0,
+    "on_exhaustion": "propagate"
+  }
+}

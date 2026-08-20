@@ -1,0 +1,31 @@
+{
+  "agent_id": "approver_agent",
+  "version": "0.1.0",
+  "display_name": "Approval Gate",
+  "description": "Suspends the workflow for human sign-off and resumes on the operator's decision.",
+  "model": "gemini-3.5-flash",
+  "capabilities": ["human-in-the-loop", "workflow-suspension"],
+  "tools": ["request_human_approval"],
+  "suspends_workflow": true,
+  "rerun_on_resume": false,
+  "rerun_rationale": "On resume the gate must not re-prompt for an approval the operator already gave.",
+  "memory_scopes": {
+    "tier1": { "read": true, "write": true },
+    "tier2": { "read": true, "write": true },
+    "tier3": { "read": false, "write": false }
+  },
+  "guardrails": {
+    "inbound": "none",
+    "outbound": "none",
+    "rationale": "Content shown to the operator originates inside the fleet and has already been screened."
+  },
+  "failure_policy": {
+    "max_attempts": 2,
+    "initial_delay_seconds": 1.0,
+    "on_exhaustion": "propagate"
+  },
+  "notes": [
+    "Implemented as an agent rather than a function node because ctx.request_confirmation requires a tool context keyed by function_call_id.",
+    "Pending state is written through ARMCL before suspending; execution does not return with in-process state intact."
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "agent_id": "executor_agent",
+  "version": "0.1.0",
+  "display_name": "Fleet Executor",
+  "description": "Executes the approved plan against the item and returns the artifact.",
+  "model": "gemini-3.5-flash",
+  "capabilities": ["action-execution"],
+  "tools": ["act_on_item"],
+  "side_effects": true,
+  "requires_upstream_approval_for": ["high-risk items"],
+  "memory_scopes": {
+    "tier1": { "read": true, "write": true },
+    "tier2": { "read": true, "write": true },
+    "tier3": {
+      "read": true,
+      "write": false,
+      "rationale": "The executor acts under policy; it does not set policy."
+    }
+  },
+  "guardrails": {
+    "inbound": "none",
+    "outbound": "model_armor",
+    "rationale": "The only node with a real-world effect, so its output is screened before leaving the trust boundary."
+  },
+  "failure_policy": {
+    "max_attempts": 3,
+    "initial_delay_seconds": 1.0,
+    "backoff_factor": 2.0,
+    "on_exhaustion": "propagate"
+  }
+}

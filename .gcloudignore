@@ -1,0 +1,16 @@
+.gcloudignore
+.git
+.gitignore
+.venv
+.env
+.env.*
+.deployed_agent.json
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+chroma_data/
+docs/
+eval/
+tests/

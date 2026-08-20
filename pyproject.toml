@@ -1,0 +1,54 @@
+[project]
+name = "fluffy-memory"
+version = "0.1.0"
+description = "Fortified Enterprise Multi-Agent Fleet powered by ARMCL (Autonomous Retrieval & Memory Context Loop) on Google ADK 2.0"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+
+dependencies = [
+    "google-adk[db]>=2.7.0",
+    "aiosqlite>=0.20.0",
+    "google-cloud-aiplatform[agent_engines,adk]>=1.165.0",
+    "google-cloud-modelarmor>=0.7.0",
+    "google-cloud-pubsub>=2.23.0",
+    "opentelemetry-api>=1.25.0",
+    "opentelemetry-sdk>=1.25.0",
+    "pydantic>=2.7.0",
+    "httpx>=0.27.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+# Offline Tier 3 fallback, used only when ARMCL_MEMORY_BACKEND=chroma.
+local = [
+    "chromadb>=0.5.0",
+]
+dev = [
+    "functions-framework>=3.8.0,<4",
+    "pytest>=8.2.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.5.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+# ADK 2.0 requires exceptions to propagate out of tools so the framework can
+# apply RetryConfig and NodeInterruptedError handling. BLE001 would push us
+# toward swallowing them.
+ignore = ["B008"]

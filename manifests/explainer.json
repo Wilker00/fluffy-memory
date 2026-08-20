@@ -1,0 +1,42 @@
+{
+  "agent_id": "explainer_agent",
+  "version": "0.1.0",
+  "display_name": "Fleet Explainer",
+  "description": "Read-only operator interface. Answers questions about why the fleet reached a decision, grounded in the ARMCL memory chain.",
+  "model": "gemini-3.5-flash",
+  "capabilities": ["reasoning-chain-audit", "operator-dialogue", "cross-session-recall"],
+  "tools": ["explain_decision_path", "recall_run_history", "recall_durable_memory"],
+  "in_workflow_graph": false,
+  "invocation": {
+    "mode": "operator-initiated",
+    "rationale": "Queried by a person after a run, in its own session. Inside the graph it would charge every autonomous run for an explanation nobody requested."
+  },
+  "memory_scopes": {
+    "tier1": {
+      "read": true,
+      "write": false,
+      "rationale": "Reads the scratchpad to describe it. Writing would let an explanation alter the run it describes."
+    },
+    "tier2": {
+      "read": true,
+      "write": false,
+      "rationale": "The episodic ledger is the audit record. An auditor that can append to the log is not an auditor."
+    },
+    "tier3": {
+      "read": true,
+      "write": false,
+      "rationale": "Surfaces durable constraints to explain a decision, but cannot create policy by describing it."
+    }
+  },
+  "guardrails": {
+    "inbound": "model_armor",
+    "outbound": "model_armor",
+    "rationale": "Both directions screened: operator questions are untrusted input, and answers quote memory that may contain sensitive fragments."
+  },
+  "failure_policy": {
+    "max_attempts": 3,
+    "initial_delay_seconds": 1.0,
+    "backoff_factor": 2.0,
+    "on_exhaustion": "propagate"
+  }
+}
