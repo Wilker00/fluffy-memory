@@ -190,7 +190,16 @@ creates a condition ARMCL must handle:
 | `verify` | Can legitimately fail → gives the critic something to reject |
 
 A domain implementing these four methods runs on the fleet unchanged. The
-synthetic workload in `app/reference/` implements them badly on purpose: 4000
+active generalized opportunity adapter accepts `SEARCH-*` handoffs from the
+Collaborative Opportunity Partner, then records recommendations, prepares
+grounded application packages, or submits through an idempotent provider before
+independently verifying the artifact or receipt.
+
+The grant adapter remains available as a focused institutional screening
+domain. Both receive screened, tenant-scoped evidence from the Collaborative
+Intake Partner; raw documents stay behind that boundary.
+
+The synthetic workload in `app/reference/` remains test-only scaffolding: 4000
 lines of telemetry per inspection, one unit that fails verification exactly
 once, and one carrying a constraint that should cause a decline on a later run.
 

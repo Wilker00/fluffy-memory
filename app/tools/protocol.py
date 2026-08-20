@@ -103,7 +103,7 @@ def register_domain(adapter: DomainAdapter) -> None:
 def active_domain() -> DomainAdapter:
     if _ACTIVE is None:
         raise RuntimeError(
-            "No domain registered. Import app.reference.workload for the synthetic "
-            "reference domain, or register a real adapter with register_domain()."
+            "No domain registered. Import app.domains to register the generalized "
+            "opportunity domain, or register an adapter with register_domain()."
         )
     return _ACTIVE

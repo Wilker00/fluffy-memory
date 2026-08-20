@@ -1,7 +1,7 @@
-"""Run the fleet locally against the reference workload.
+"""Run the fleet locally against the generalized opportunity workload.
 
     python -m app.local_run
-    python -m app.local_run --query "UNIT-7" --approve
+    python -m app.local_run --opportunity-mode prepare
     python -m app.local_run --runs 3          # demonstrate cross-session recall
 
 Prints each node transition, the ARMCL tier state, and the final outcome, so
@@ -19,12 +19,18 @@ from google.adk import Runner
 from google.adk.sessions import BaseSessionService
 from google.genai import types
 
-import app.reference  # noqa: F401  registers the reference domain
+import app.domains  # noqa: F401  registers the generalized opportunity domain
 from app.app_config import build_adk_app
 from app.armcl.memory_backend import build_memory_service
 from app.armcl.tiers import T2_LEDGER_KEY, Tier1
 from app.evolve.playbook import get_store, scope_key
 from app.observability.tracing import configure_local_tracing
+from app.opportunities import (
+    OPPORTUNITY_STORE,
+    CandidateProfile,
+    ExecutionMode,
+    OpportunityType,
+)
 from app.session_backend import build_session_service
 from app.settings import settings
 
@@ -121,11 +127,58 @@ def _print_tiers(session: Any) -> None:
 
 async def main() -> int:
     parser = argparse.ArgumentParser(description="Run the fluffy-memory fleet locally.")
-    parser.add_argument("--query", default="all units requiring assessment")
+    parser.add_argument(
+        "--query",
+        default="demo-opportunities",
+        help="Existing SEARCH-* request id, or demo-opportunities to seed a local case.",
+    )
+    parser.add_argument(
+        "--opportunity-mode",
+        choices=[mode.value for mode in ExecutionMode],
+        default=ExecutionMode.RECOMMEND.value,
+        help="Action taken for the seeded demo opportunity search.",
+    )
     parser.add_argument("--runs", type=int, default=1, help="Consecutive runs sharing memory.")
     parser.add_argument("--user-id", default="local-operator")
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
+
+    if args.query == "demo-opportunities":
+        profile = CandidateProfile(
+            profile_id="PROFILE-LOCAL-DEMO",
+            tenant_id=args.user_id,
+            source_application_id="CAREER-EVIDENCE-LOCAL",
+            summary="Backend and hardware engineer with evidence-backed project experience.",
+            verified_skills=[
+                "python",
+                "postgresql",
+                "google cloud",
+                "kubernetes",
+                "git",
+                "embedded",
+                "pcb",
+            ],
+            experience_years={"backend": 3.0},
+            education_level="bachelor",
+            coursework=["calculus i", "data structures"],
+            portfolio_evidence={
+                "backend": "demo:portfolio:backend",
+                "hardware": "demo:portfolio:hardware",
+                "open source": "demo:portfolio:open-source",
+            },
+            preferred_locations=["Remote", "New York", "Boston"],
+            work_authorization="US authorized",
+            sponsorship_required=False,
+            preferred_types=list(OpportunityType),
+        )
+        OPPORTUNITY_STORE.register_profile(profile)
+        request, _ = await OPPORTUNITY_STORE.create_search_request(
+            tenant_id=args.user_id,
+            profile_id=profile.profile_id,
+            mode=ExecutionMode(args.opportunity_mode),
+            minimum_score=70,
+        )
+        args.query = request.request_id
 
     configure_logging(args.verbose)
     if configure_local_tracing():

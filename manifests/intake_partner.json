@@ -1,0 +1,59 @@
+{
+  "agent_id": "intake_partner_agent",
+  "version": "0.1.0",
+  "display_name": "Collaborative Intake Partner",
+  "description": "Guides secure uploads to a review-ready evidence package without deciding eligibility or writing policy.",
+  "model": "gemini-3.5-flash",
+  "capabilities": [
+    "guided-document-intake",
+    "application-scoped-evidence-search",
+    "clarification-dialogue",
+    "review-readiness",
+    "screening-handoff"
+  ],
+  "tools": [
+    "list_uploaded_documents",
+    "assess_review_readiness",
+    "search_uploaded_evidence",
+    "search_program_requirements",
+    "prepare_application_for_screening"
+  ],
+  "in_workflow_graph": false,
+  "invocation": {
+    "mode": "user-initiated-before-screening",
+    "rationale": "The partner collaborates until intake is complete; the autonomous fleet starts only after a review-ready handoff exists."
+  },
+  "memory_scopes": {
+    "tier1": {
+      "read": false,
+      "write": false,
+      "rationale": "Intake state lives in the tenant-scoped document service, not the screening run scratchpad."
+    },
+    "tier2": {
+      "read": false,
+      "write": false,
+      "rationale": "The partner cannot alter the autonomous fleet's audit ledger."
+    },
+    "tier3": {
+      "read": false,
+      "write": false,
+      "rationale": "Applicant evidence must never become institutional policy. The partner reads policy only through a trusted catalog tool."
+    }
+  },
+  "data_scopes": {
+    "uploads": "tenant_id + application_id",
+    "policy": "read-only trusted catalog",
+    "raw_content_to_model": false
+  },
+  "guardrails": {
+    "upload": "model_armor_before_agent",
+    "outbound": "pii-minimized citations",
+    "rationale": "Raw extracted documents are screened at ingestion; agent tools return manifests, redacted citations, and structured evidence only."
+  },
+  "failure_policy": {
+    "max_attempts": 3,
+    "initial_delay_seconds": 1.0,
+    "backoff_factor": 2.0,
+    "on_exhaustion": "propagate"
+  }
+}

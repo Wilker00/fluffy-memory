@@ -16,6 +16,8 @@ def running_agents() -> dict:
     from app.agents.evolver import evolver_agent
     from app.agents.executor import executor_agent
     from app.agents.explainer import explainer_agent
+    from app.agents.intake_partner import intake_partner_agent
+    from app.agents.opportunity_partner import opportunity_partner_agent
     from app.agents.scout import scout_agent
 
     return {
@@ -28,6 +30,8 @@ def running_agents() -> dict:
             approver_agent,
             evolver_agent,
             explainer_agent,
+            intake_partner_agent,
+            opportunity_partner_agent,
         )
     }
 

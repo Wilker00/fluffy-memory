@@ -1,0 +1,52 @@
+{
+  "agent_id": "opportunity_partner_agent",
+  "version": "0.1.0",
+  "display_name": "Collaborative Opportunity Partner",
+  "description": "Finds clearly qualified opportunities, prepares evidence-grounded materials, and tracks progress without directly submitting.",
+  "model": "gemini-3.5-flash",
+  "capabilities": [
+    "candidate-profile-grounding",
+    "multi-category-opportunity-search",
+    "qualification-matching",
+    "application-document-generation",
+    "pipeline-tracking"
+  ],
+  "tools": [
+    "assess_review_readiness",
+    "search_uploaded_evidence",
+    "build_opportunity_profile",
+    "find_qualified_opportunities",
+    "prepare_opportunity_documents",
+    "get_opportunity_pipeline"
+  ],
+  "in_workflow_graph": false,
+  "invocation": {
+    "mode": "user-initiated-before-fleet-handoff",
+    "rationale": "The partner collaborates on preferences and materials; submission remains inside the governed autonomous workflow."
+  },
+  "memory_scopes": {
+    "tier1": { "read": false, "write": false },
+    "tier2": { "read": false, "write": false },
+    "tier3": {
+      "read": false,
+      "write": false,
+      "rationale": "Candidate preferences and claims cannot become institutional policy."
+    }
+  },
+  "data_scopes": {
+    "candidate_profile": "tenant_id",
+    "uploaded_evidence": "tenant_id + application_id",
+    "submission": "none; fleet-only"
+  },
+  "guardrails": {
+    "input_evidence": "screened upload corpus only",
+    "claim_policy": "unsupported claims dropped",
+    "rationale": "Generated materials may use only evidence-grounded profile facts."
+  },
+  "failure_policy": {
+    "max_attempts": 3,
+    "initial_delay_seconds": 1.0,
+    "backoff_factor": 2.0,
+    "on_exhaustion": "propagate"
+  }
+}

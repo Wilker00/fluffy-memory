@@ -31,6 +31,9 @@ ADJUDICATION_MODEL = "gemini-3.5-pro"
 MemoryBackend = Literal["memory_bank", "chroma", "memory"]
 GuardrailBackend = Literal["model_armor", "regex"]
 SessionBackend = Literal["database", "memory"]
+IntakeBackend = Literal["memory", "sqlite"]
+ScorecardBackend = Literal["memory", "sqlite"]
+OpportunityBackend = Literal["memory", "sqlite"]
 
 
 def _env(key: str, default: str = "") -> str:
@@ -89,6 +92,33 @@ class Settings:
     session_db_url: str = field(
         default_factory=lambda: _env(
             "ARMCL_SESSION_DB_URL", "sqlite+aiosqlite:///./armcl_sessions.db"
+        )
+    )
+
+    # Durable domain-side artifacts. Memory remains the default so unit tests
+    # and ephemeral demos do not share state between processes.
+    intake_backend: IntakeBackend = field(
+        default_factory=lambda: _env("INTAKE_BACKEND", "memory")  # type: ignore[return-value]
+    )
+    intake_db_url: str = field(
+        default_factory=lambda: _env(
+            "INTAKE_DB_URL", "sqlite+aiosqlite:///./armcl_intake.db"
+        )
+    )
+    scorecard_backend: ScorecardBackend = field(
+        default_factory=lambda: _env("SCORECARD_BACKEND", "memory")  # type: ignore[return-value]
+    )
+    scorecard_db_url: str = field(
+        default_factory=lambda: _env(
+            "SCORECARD_DB_URL", "sqlite+aiosqlite:///./armcl_intake.db"
+        )
+    )
+    opportunity_backend: OpportunityBackend = field(
+        default_factory=lambda: _env("OPPORTUNITY_BACKEND", "memory")  # type: ignore[return-value]
+    )
+    opportunity_db_url: str = field(
+        default_factory=lambda: _env(
+            "OPPORTUNITY_DB_URL", "sqlite+aiosqlite:///./armcl_intake.db"
         )
     )
 

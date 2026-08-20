@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from vertexai.agent_engines import AdkApp
 
-import app.reference  # noqa: F401  registers the reference domain
+import app.domains  # noqa: F401  registers the generalized opportunity domain
 from app.app_config import build_adk_app
 
 
