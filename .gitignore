@@ -57,6 +57,10 @@ htmlcov/
 logs/
 otel_traces.json
 
+# Generated ADK evaluation history and metric captures
+eval/.adk/
+eval/results/
+
 # Deployment bookkeeping written by deploy.py, read by destroy.py
 .deployed_agent.json
 

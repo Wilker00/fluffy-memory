@@ -30,6 +30,9 @@ dev = [
     "pytest-asyncio>=0.23.0",
     "ruff>=0.5.0",
 ]
+eval = [
+    "google-adk[eval]>=2.7.0",
+]
 
 [build-system]
 requires = ["hatchling"]

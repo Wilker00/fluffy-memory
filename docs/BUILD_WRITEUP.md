@@ -231,7 +231,7 @@ ran is what makes the system trustworthy rather than merely demoable.
 
 ---
 
-*Repo: [fluffy-memory](https://github.com/YOUR_USERNAME/fluffy-memory) —
+*Repo: [fluffy-memory](https://github.com/Wilker00/fluffy-memory) —
 Apache 2.0. Built with ADK 2.0, Gemini 3.5, Vertex AI Agent Runtime, Memory
 Bank, Model Armor, and Cloud Scheduler → Pub/Sub → Cloud Run functions.*
 

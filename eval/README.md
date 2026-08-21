@@ -23,11 +23,19 @@ cold session, and that per-task state does *not* cross that boundary.
 what ARMCL retrieves. Mechanism tests can pass while a model ignores the
 context frame it was handed, and only this layer catches that.
 
-Requires cloud credentials and spends tokens:
+Requires cloud credentials, the ADK evaluation extra, and spends tokens:
 
 ```bash
-adk eval app eval/cross_session_recall.evalset.json --config_file_path eval/test_config.json
+pip install -e ".[eval]"
+gcloud auth application-default login
+python -m eval.run_eval --project YOUR_GOOGLE_CLOUD_PROJECT
 ```
+
+The runner stores the raw ADK output under `eval/results/` and writes
+`eval/results/latest_metrics.json` with trajectory success rate, memory recall
+consistency, refusal accuracy, response match, and amortized average latency.
+It also corrects an ADK CLI edge case: the underlying command can exit zero
+when every case failed during inference, while this wrapper exits non-zero.
 
 ### The three cases
 

@@ -251,7 +251,7 @@ Explainer reconstructs decisions without being able to edit their evidence.
 ### Local, no cloud account
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/fluffy-memory.git
+git clone https://github.com/Wilker00/fluffy-memory.git
 cd fluffy-memory
 make dev-install
 cp .env.example .env
@@ -260,7 +260,7 @@ cp .env.example .env
 echo "ARMCL_MEMORY_BACKEND=chroma"  >> .env
 echo "GUARDRAIL_BACKEND=regex"      >> .env
 
-make test        # 238 tests, no credentials, no token spend
+make test        # 244 tests, no credentials, no token spend
 make run         # seeded recommendation run across opportunity categories
 
 # Other bounded operating modes
@@ -597,7 +597,7 @@ manifests/                Agent Registry capability contracts
 deploy/                   setup, smoke test, deploy, scheduler, destroy
 docs/                     architecture diagram, build write-up
 eval/                     model-in-the-loop eval set
-tests/                    238 deterministic tests
+tests/                    244 deterministic tests
 ```
 
 Run `python -m app.registry` to print the fleet capability catalog: what each
